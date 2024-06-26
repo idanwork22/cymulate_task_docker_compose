@@ -1,6 +1,10 @@
 # Idan Chen Cymulate Senior python backend
 ## Web Scraping Application Docker Setup
 
+
+![Project Logo](project1.png)
+![Project Logo](project2.png)
+
 This README provides instructions on how to configure and run the web scraping application using Docker Compose.
 
 ## Prerequisites
