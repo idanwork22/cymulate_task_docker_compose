@@ -29,7 +29,7 @@ services:
 
   nodejs-backend:
     build:
-      context: ./cymulate_be_node
+      context: ./cymulate_node_js
       dockerfile: Dockerfile
     ports:
       - "3005:3005"
