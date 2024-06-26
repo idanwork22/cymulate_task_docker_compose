@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - app-network
+
+  python-backend:
+    build: 
+      context: ./cymulate_web_scraping
+      dockerfile: Dockerfile
+    ports:
+      - "5003:5005" 
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_CONNECTION_URL=mongodb://mongodb:27017  
+      - MONGO_DB=cymulate_db
+      - MONGO_COLLECTION=cymulate_collection
+      - HOST=0.0.0.0 
+      - PORT=5005
+    networks:
+      - app-network
+
+  nodejs-backend:
+    build:
+      context: ./cymulate_be_node
+      dockerfile: Dockerfile
+    ports:
+      - "3005:3005"
+    depends_on:
+      - mongodb
+      - python-backend
+    environment:
+      - PORT=3005
+      - PYTHON_BACKEND_URL=http://python-backend:5005  
+    networks:
+      - app-network
+
+  react-frontend:
+    build:
+      context: ./cymulate_fe_react
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    environment:
+      - REACT_APP_API_HOST=nodejs-backend 
+      - REACT_APP_API_PORT=3005
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:

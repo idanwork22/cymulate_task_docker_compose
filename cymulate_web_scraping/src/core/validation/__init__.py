@@ -1,0 +1,2 @@
+from .scrape_request_validation import ScrapeRequest
+from .scrape_result_validation import ScrapeResponse
