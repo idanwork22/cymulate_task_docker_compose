@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.routes import *
 from src.base import Config
 
+
 def get_app():
     app = FastAPI()
     app_config = Config().get_value('app')
@@ -20,4 +21,4 @@ def get_app():
     )
     # include all the routes
     app.include_router(scrape_router)
-    return app, os.getenv("HOST",app_config['host']), os.getenv("PORT",app_config['port'])
+    return app, os.getenv("HOST", app_config['host']), int(os.getenv("PORT", app_config['port']))

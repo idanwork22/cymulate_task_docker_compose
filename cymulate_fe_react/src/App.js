@@ -1,9 +1,14 @@
+// Import necessary React hooks and components
 import React, { useState, useEffect, useCallback } from 'react';
+// Import Material-UI components and styling utilities
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Container, Typography, TextField, Button, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, Card, CardContent, InputAdornment, Chip, Dialog, DialogTitle, DialogContent, List, ListItem, ListItemText, IconButton, Snackbar, Alert } from '@mui/material';
+// Import icons from Lucide React
 import { Search as SearchIcon, X as CloseIcon, ExternalLink } from 'lucide-react';
+// Import axios for making HTTP requests
 import axios from 'axios';
 
+// Create a custom theme for Material-UI
 const theme = createTheme({
   palette: {
     primary: { main: '#3f51b5' },
@@ -16,10 +21,12 @@ const theme = createTheme({
   },
 });
 
-// Use environment variables for API base URL
+// Set up the API base URL using environment variables or default values
 const API_BASE_URL = `http://${process.env.REACT_APP_API_HOST || 'localhost'}:${'3005' || '5001'}`;
-console.log(API_BASE_URL)
+console.log(API_BASE_URL);
+
 const App = () => {
+  // State variables
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [scrapes, setScrapes] = useState([]);
@@ -27,8 +34,10 @@ const App = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [error, setError] = useState(null);
 
+  // Function to fetch all scrapes from the API
   const fetchScrapes = useCallback(async () => {
     try {
+      console.log("fetchScrapes")
       const response = await axios.get(`${API_BASE_URL}/scrape/all`);
       setScrapes(response.data);
       return response.data;
@@ -39,10 +48,13 @@ const App = () => {
     }
   }, []);
 
+  // Fetch scrapes when component mounts
   useEffect(() => {
+    console.log("Use Effect")
     fetchScrapes();
   }, [fetchScrapes]);
 
+  // Function to initiate a new scrape
   const handleScrape = async () => {
     setLoading(true);
     setError(null);
@@ -56,6 +68,7 @@ const App = () => {
     }
   };
 
+  // Function to poll the API for scrape completion
   const pollForCompletion = useCallback(async () => {
     const poll = async () => {
       const data = await fetchScrapes();
@@ -76,15 +89,18 @@ const App = () => {
     poll();
   }, [fetchScrapes]);
 
+  // Function to open the dialog with scrape details
   const handleOpenDialog = (scrape) => {
     setSelectedScrape(scrape);
     setOpenDialog(true);
   };
 
+  // Function to close the dialog
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
 
+  // Function to close the error snackbar
   const handleCloseError = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -92,10 +108,12 @@ const App = () => {
     setError(null);
   };
 
+  // Render the component
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', py: 4 }}>
         <Container maxWidth="md">
+          {/* Input card for scraping */}
           <Card elevation={3} sx={{ mb: 4, overflow: 'hidden' }}>
             <CardContent sx={{ p: 4 }}>
               <Typography variant="h4" gutterBottom sx={{ mb: 4, textAlign: 'center', color: 'primary.main' }}>
@@ -130,6 +148,7 @@ const App = () => {
             </CardContent>
           </Card>
 
+          {/* Results card */}
           <Card elevation={3}>
             <CardContent sx={{ p: 4 }}>
               <Typography variant="h5" gutterBottom sx={{ mb: 3, color: 'text.secondary' }}>
@@ -185,6 +204,7 @@ const App = () => {
         </Container>
       </Box>
 
+      {/* Dialog for displaying scraped URLs */}
       <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
         <DialogTitle>
           <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -208,6 +228,7 @@ const App = () => {
         </DialogContent>
       </Dialog>
 
+      {/* Error Snackbar */}
       <Snackbar open={!!error} autoHideDuration={6000} onClose={handleCloseError}>
         <Alert onClose={handleCloseError} severity="error" sx={{ width: '100%' }}>
           {error}

@@ -21,7 +21,7 @@ scraper = Scraper()
 async def start_scraping(request: ScrapeRequest):
     url = str(request.url)
     scrape_id = scraper.save_initial_record(url)
-    threading.Thread(target=scraper.scrape_website, args=(url,scrape_id)).start()
+    threading.Thread(target=scraper.scrape_website, args=(url, scrape_id)).start()
     return True
 
 

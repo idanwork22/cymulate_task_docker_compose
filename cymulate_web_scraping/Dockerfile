@@ -10,8 +10,5 @@ COPY . /app
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose the application port
-EXPOSE 5002
-
 # Run the command to start the FastAPI server
 CMD ["python", "app.py"]
